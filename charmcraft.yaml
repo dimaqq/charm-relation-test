@@ -1,0 +1,47 @@
+---
+name: relation-test
+type: charm
+title: Relation tester
+summary: Tester for setting large relation data blobs
+description: |
+  Blah
+bases:
+  - build-on:
+    - name: ubuntu
+      channel: "22.04"
+    run-on:
+    - name: ubuntu
+      channel: "22.04"
+config:
+  options:
+    num-monitors:
+      description: |
+        Number of monitors to generate for a cos-proxy stress test.
+      default: 10
+      type: int
+    size-relation-data:
+      description: |
+        Size in bytes for the relation data to test setting in the ops framework.
+      default: 1024
+      type: int
+    relation-update-kind:
+      description: |
+        How to update the relations: "ops" or "binary"
+      default: ops
+      type: string
+    debug:
+      description: |
+        Debug stuff
+      default: false
+      type: boolean
+peers:
+  blob-test:
+    interface: test-relation
+
+provides:
+  monitors:
+    interface: monitors
+
+requires:
+  mon-consume:
+    interface: monitors
