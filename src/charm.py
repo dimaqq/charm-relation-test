@@ -114,7 +114,7 @@ class CharmRelationTestCharm(ops.CharmBase):
     def set_relation_data(self, rel, key, data):
         tstart = time.time()
         if self.update_kind() == "ops":
-            rel.data[self.unit]["data"] = data
+            rel.data[self.unit][key] = data
         elif self.update_kind() == "binary":
             cmd = ["relation-set", "-r", str(rel.id), f"{key}={data}"]
             if self.model.config["debug"]:
