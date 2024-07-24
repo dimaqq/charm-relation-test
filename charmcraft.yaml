@@ -14,21 +14,6 @@ bases:
       channel: "22.04"
 config:
   options:
-    num-monitors:
-      description: |
-        Number of monitors to generate for a cos-proxy stress test.
-      default: 10
-      type: int
-    size-relation-data:
-      description: |
-        Size in bytes for the relation data to test setting in the ops framework.
-      default: 1024
-      type: int
-    relation-update-kind:
-      description: |
-        How to update the relations: "ops" or "binary"
-      default: ops
-      type: string
     debug:
       description: |
         Debug stuff
@@ -38,10 +23,45 @@ peers:
   blob-test:
     interface: test-relation
 
-provides:
-  monitors:
-    interface: monitors
-
-requires:
-  mon-consume:
-    interface: monitors
+actions:
+  set-random-blob:
+    description: Something
+    params:
+      size:
+        type: integer
+        description: Size in relation data blob in bytes
+      buckets:
+        type: integer
+        description: Number of different relation keys to set
+        default: 1
+      repetitions:
+        type: integer
+        description: How many times to set the same key with data
+        default: 1
+      method:
+        type: string
+        enum:
+        - ops
+        - relation-set
+        default: ops
+    required:
+      - size
+    additionalProperties: false
+  get-blobs:
+    description: Something
+    params:
+      buckets:
+        type: integer
+        description: Number of different relation keys to set
+        default: 1
+      repetitions:
+        type: integer
+        description: How many times to set the same key with data
+        default: 1
+      method:
+        type: string
+        enum:
+        - ops
+        - relation-get
+        default: ops
+    additionalProperties: false
