@@ -27,7 +27,6 @@ class CharmRelationTestCharm(ops.CharmBase):
         framework.observe(self.on.set_random_blob_action, self._on_set_random_blob_action)
         framework.observe(self.on.get_blobs_action, self._on_get_blobs_action)
 
-
     def _on_start(self, event: ops.StartEvent):
         self.unit.status = ops.ActiveStatus()
 
@@ -38,10 +37,12 @@ class CharmRelationTestCharm(ops.CharmBase):
         method = event.params["method"]
 
         times = []
+        times_data = []
         for bucket in range(event.params["buckets"]):
             key = f"key-{bucket}"
+            t_data, data = self.gen_fake_data(size)
+            times_data.append(t_data)
             for iteration in range(event.params["repetitions"]):
-                data = self.gen_fake_data(size)
                 t = self.set_relation_data(blob_test, key, data, method)
                 event.log(f"Time using {method} for size {len(data)/1024/1024:.3}Mi, bucket {key}, iter {iteration}: {t}")
                 times.append(t)
@@ -51,6 +52,7 @@ class CharmRelationTestCharm(ops.CharmBase):
             "max": max(times),
             "avg": sum(times) / len(times),
             "min": min(times),
+            "data-gen-time": max(times_data),
         })
 
     def _on_get_blobs_action(self, event):
@@ -107,12 +109,16 @@ class CharmRelationTestCharm(ops.CharmBase):
         return t,s
 
     def gen_fake_data(self, size):
+        tstart = time.time()
+
         fake = Faker()
         # Speed this up by only randomly generating a small amount and then repeating it
         small_size = min(100, size)
         small = fake.pystr(small_size, small_size)
-        return small * (size // small_size)
-        
+
+        t = time.time() - tstart
+        return t, small * (size // small_size)
+
 
 if __name__ == "__main__":  # pragma: nocover
     ops.main(CharmRelationTestCharm)  # type: ignore
