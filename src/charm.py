@@ -26,10 +26,16 @@ class CharmRelationTestCharm(ops.CharmBase):
         framework.observe(self.on.start, self._on_start)
         framework.observe(self.on.set_random_blob_action, self._on_set_random_blob_action)
         framework.observe(self.on.get_blobs_action, self._on_get_blobs_action)
+        framework.observe(self.on.reset_action, self._on_reset_action)
 
 
     def _on_start(self, event: ops.StartEvent):
         self.unit.status = ops.ActiveStatus()
+
+    def _on_reset_action(self, event):
+        blob_test = self.model.get_relation("blob-test")
+        for key in list(blob_test.data[self.unit]):
+            del blob_test.data[self.unit][key]
 
     def _on_set_random_blob_action(self, event):
         blob_test = self.model.get_relation("blob-test")

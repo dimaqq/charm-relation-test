@@ -65,3 +65,6 @@ actions:
         - relation-get
         default: ops
     additionalProperties: false
+  reset:
+    description: Something
+    additionalProperties: false
