@@ -12,6 +12,10 @@ bases:
     run-on:
     - name: ubuntu
       channel: "22.04"
+parts:
+  charm:
+    charm-binary-python-packages:
+      - PyYAML
 config:
   options:
     debug:
@@ -43,6 +47,8 @@ actions:
         enum:
         - ops
         - relation-set
+        - slow-ops
+        - fast-ops
         default: ops
     required:
       - size

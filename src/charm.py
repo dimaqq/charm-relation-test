@@ -91,6 +91,18 @@ class CharmRelationTestCharm(ops.CharmBase):
         if method == "ops":
             tstart = time.time()
             rel.data[self.unit][key] = data
+        elif method == "slow-ops":
+            import yaml, ops._private.yaml
+            ops._private.yaml._safe_dumper = yaml.SafeDumper
+            ops._private.yaml._safe_loader = yaml.SafeLoader
+            tstart = time.time()
+            rel.data[self.unit][key] = data
+        elif method == "fast-ops":
+            import yaml, ops._private.yaml
+            ops._private.yaml._safe_dumper = yaml.CSafeDumper
+            ops._private.yaml._safe_loader = yaml.CSafeLoader
+            tstart = time.time()
+            rel.data[self.unit][key] = data
         elif method == "relation-set":
             file = tempfile.NamedTemporaryFile("w", delete=False)
             file.write(json.dumps({key: data}))
